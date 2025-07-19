@@ -64,7 +64,8 @@ export class Movimentacao {
    * @param valor - Valor a ser validado
    * @returns true se válido, false caso contrário
    */
-  static validarValor(valor: number): boolean {
+  static validarValor(valor?: number): boolean {
+    if (valor === undefined || valor === null) return true; // Valor opcional
     return valor > 0 && valor <= 999999.99;
   }
 

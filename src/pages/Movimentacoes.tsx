@@ -124,8 +124,9 @@ export default function Movimentacoes() {
       return false;
     }
 
-    const valorNum = parseFloat(valor);
-    if (!Movimentacao.validarValor(valorNum)) {
+    // Valor é opcional, mas se fornecido deve ser válido
+    const valorNum = valor ? parseFloat(valor) : undefined;
+    if (valor && !Movimentacao.validarValor(valorNum)) {
       toast({
         title: 'Valor inválido',
         description: 'O valor deve ser entre R$ 0,01 e R$ 999.999,99.',
@@ -164,11 +165,11 @@ export default function Movimentacoes() {
 
     try {
       setSalvando(true);
-      const valorNum = parseFloat(valor);
-      // Para movimentações avulsas sem data, usar data atual
-      const data = dataVencimento 
+      const valorNum = valor ? parseFloat(valor) : undefined;
+      // Para movimentações avulsas sem data, não usar data
+      const data = (frequencia !== FrequenciaMovimentacao.AVULSA && dataVencimento) 
         ? new Date(dataVencimento + 'T00:00:00')
-        : new Date();
+        : undefined;
 
       if (movimentacaoEditando) {
         // Editar movimentação existente
@@ -346,7 +347,7 @@ export default function Movimentacoes() {
               </div>
               
               <div>
-                <Label htmlFor="valor">Valor</Label>
+                <Label htmlFor="valor">Valor (Opcional)</Label>
                 <Input
                   id="valor"
                   type="number"
@@ -357,6 +358,9 @@ export default function Movimentacoes() {
                   onChange={(e) => setValor(e.target.value)}
                   placeholder="0,00"
                 />
+                <p className="text-sm text-muted-foreground mt-1">
+                  Você pode criar a movimentação sem valor e preencher depois.
+                </p>
               </div>
               
               <div>

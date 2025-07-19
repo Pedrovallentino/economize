@@ -6,10 +6,10 @@ import { Movimentacao, TipoMovimentacao, FrequenciaMovimentacao } from '@/domini
  */
 export interface DadosCriacaoMovimentacao {
   nome: string;
-  valor: number;
+  valor?: number;
   tipo: TipoMovimentacao;
   frequencia: FrequenciaMovimentacao;
-  dataVencimento: Date;
+  dataVencimento?: Date;
   carteiraId: string;
   descricao?: string;
 }
@@ -55,17 +55,17 @@ export class RepositorioMovimentacao {
       throw new Error(`Erro ao buscar carteira: ${carteiraError.message}`);
     }
 
-    // Calcular novo saldo baseado no tipo de movimentação
-    const saldoAtual = parseFloat(carteiraAtual.saldo.toString());
-    const novoSaldo = dados.tipo === TipoMovimentacao.RECEITA 
-      ? saldoAtual + dados.valor 
-      : saldoAtual - dados.valor;
-
-    // Verificar se o saldo não ficará negativo para despesas
-    if (dados.tipo === TipoMovimentacao.DESPESA && novoSaldo < 0) {
-      throw new Error('Saldo insuficiente na carteira para realizar esta despesa');
+    // Calcular novo saldo baseado no tipo de movimentação (apenas se valor for fornecido)
+    let novoSaldo = parseFloat(carteiraAtual.saldo.toString());
+    if (dados.valor) {
+      novoSaldo = dados.tipo === TipoMovimentacao.RECEITA 
+        ? novoSaldo + dados.valor 
+        : novoSaldo - dados.valor;
     }
 
+    // Definir data padrão para movimentações avulsas sem data
+    const dataVencimento = dados.dataVencimento || new Date();
+    
     // Inserir movimentação e atualizar saldo da carteira em uma transação
     const { data, error } = await supabase
       .from('movimentacoes')
@@ -74,10 +74,10 @@ export class RepositorioMovimentacao {
           usuario_id: user.user.id,
           carteira_id: dados.carteiraId,
           nome: dados.nome,
-          valor: dados.valor,
+          valor: dados.valor || 0,
           tipo: dados.tipo,
           frequencia: dados.frequencia,
-          data_vencimento: dados.dataVencimento.toISOString().split('T')[0],
+          data_vencimento: dataVencimento.toISOString().split('T')[0],
           descricao: dados.descricao
         }
       ])
@@ -88,21 +88,23 @@ export class RepositorioMovimentacao {
       throw new Error(`Erro ao criar movimentação: ${error.message}`);
     }
 
-    // Atualizar saldo da carteira
-    const { error: saldoError } = await supabase
-      .from('carteiras')
-      .update({ saldo: novoSaldo })
-      .eq('id', dados.carteiraId)
-      .eq('usuario_id', user.user.id);
+    // Atualizar saldo da carteira apenas se valor foi fornecido
+    if (dados.valor) {
+      const { error: saldoError } = await supabase
+        .from('carteiras')
+        .update({ saldo: novoSaldo })
+        .eq('id', dados.carteiraId)
+        .eq('usuario_id', user.user.id);
 
-    if (saldoError) {
-      // Se falhar ao atualizar saldo, tentar desfazer a movimentação criada
-      await supabase
-        .from('movimentacoes')
-        .delete()
-        .eq('id', data.id);
-      
-      throw new Error(`Erro ao atualizar saldo da carteira: ${saldoError.message}`);
+      if (saldoError) {
+        // Se falhar ao atualizar saldo, tentar desfazer a movimentação criada
+        await supabase
+          .from('movimentacoes')
+          .delete()
+          .eq('id', data.id);
+        
+        throw new Error(`Erro ao atualizar saldo da carteira: ${saldoError.message}`);
+      }
     }
 
     return this.mapearParaDominio(data);
