@@ -7,6 +7,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Layout from "@/components/Layout";
 import Dashboard from "@/pages/Dashboard";
 import Carteiras from "@/pages/Carteiras";
+import Movimentacoes from "@/pages/Movimentacoes";
 import Auth from "@/pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -27,7 +28,7 @@ const App = () => (
           }>
             <Route index element={<Dashboard />} />
             <Route path="carteiras" element={<Carteiras />} />
-            <Route path="movimentacoes" element={<div>Movimentações - Em desenvolvimento</div>} />
+            <Route path="movimentacoes" element={<Movimentacoes />} />
             <Route path="metas" element={<div>Metas - Em desenvolvimento</div>} />
             <Route path="caixinhas" element={<div>Caixinhas - Em desenvolvimento</div>} />
           </Route>
