@@ -14,7 +14,223 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      caixinhas_poupanca: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          saldo: number
+          updated_at: string
+          usuario_id: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          saldo?: number
+          updated_at?: string
+          usuario_id: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          saldo?: number
+          updated_at?: string
+          usuario_id?: string
+        }
+        Relationships: []
+      }
+      carteiras: {
+        Row: {
+          created_at: string
+          descricao: string | null
+          id: string
+          nome: string
+          saldo: number
+          updated_at: string
+          usuario_id: string
+        }
+        Insert: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          saldo?: number
+          updated_at?: string
+          usuario_id: string
+        }
+        Update: {
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          saldo?: number
+          updated_at?: string
+          usuario_id?: string
+        }
+        Relationships: []
+      }
+      historico_caixinhas: {
+        Row: {
+          caixinha_id: string
+          created_at: string
+          descricao: string | null
+          id: string
+          saldo_anterior: number
+          saldo_novo: number
+          tipo: string
+          valor: number
+        }
+        Insert: {
+          caixinha_id: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          saldo_anterior: number
+          saldo_novo: number
+          tipo: string
+          valor: number
+        }
+        Update: {
+          caixinha_id?: string
+          created_at?: string
+          descricao?: string | null
+          id?: string
+          saldo_anterior?: number
+          saldo_novo?: number
+          tipo?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "historico_caixinhas_caixinha_id_fkey"
+            columns: ["caixinha_id"]
+            isOneToOne: false
+            referencedRelation: "caixinhas_poupanca"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metas_financeiras: {
+        Row: {
+          concluida: boolean
+          created_at: string
+          data_limite: string
+          descricao: string | null
+          id: string
+          nome: string
+          updated_at: string
+          usuario_id: string
+          valor_acumulado: number
+          valor_objetivo: number
+        }
+        Insert: {
+          concluida?: boolean
+          created_at?: string
+          data_limite: string
+          descricao?: string | null
+          id?: string
+          nome: string
+          updated_at?: string
+          usuario_id: string
+          valor_acumulado?: number
+          valor_objetivo: number
+        }
+        Update: {
+          concluida?: boolean
+          created_at?: string
+          data_limite?: string
+          descricao?: string | null
+          id?: string
+          nome?: string
+          updated_at?: string
+          usuario_id?: string
+          valor_acumulado?: number
+          valor_objetivo?: number
+        }
+        Relationships: []
+      }
+      movimentacoes: {
+        Row: {
+          ativa: boolean
+          carteira_id: string
+          created_at: string
+          data_vencimento: string
+          descricao: string | null
+          frequencia: Database["public"]["Enums"]["frequencia_movimentacao"]
+          id: string
+          nome: string
+          tipo: Database["public"]["Enums"]["tipo_movimentacao"]
+          updated_at: string
+          usuario_id: string
+          valor: number
+        }
+        Insert: {
+          ativa?: boolean
+          carteira_id: string
+          created_at?: string
+          data_vencimento: string
+          descricao?: string | null
+          frequencia?: Database["public"]["Enums"]["frequencia_movimentacao"]
+          id?: string
+          nome: string
+          tipo: Database["public"]["Enums"]["tipo_movimentacao"]
+          updated_at?: string
+          usuario_id: string
+          valor: number
+        }
+        Update: {
+          ativa?: boolean
+          carteira_id?: string
+          created_at?: string
+          data_vencimento?: string
+          descricao?: string | null
+          frequencia?: Database["public"]["Enums"]["frequencia_movimentacao"]
+          id?: string
+          nome?: string
+          tipo?: Database["public"]["Enums"]["tipo_movimentacao"]
+          updated_at?: string
+          usuario_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "movimentacoes_carteira_id_fkey"
+            columns: ["carteira_id"]
+            isOneToOne: false
+            referencedRelation: "carteiras"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      perfis: {
+        Row: {
+          created_at: string
+          id: string
+          nome_completo: string | null
+          updated_at: string
+          usuario_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome_completo?: string | null
+          updated_at?: string
+          usuario_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome_completo?: string | null
+          updated_at?: string
+          usuario_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +239,8 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      frequencia_movimentacao: "avulsa" | "semanal" | "quinzenal" | "mensal"
+      tipo_movimentacao: "receita" | "despesa"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +367,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      frequencia_movimentacao: ["avulsa", "semanal", "quinzenal", "mensal"],
+      tipo_movimentacao: ["receita", "despesa"],
+    },
   },
 } as const
