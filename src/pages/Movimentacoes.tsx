@@ -134,10 +134,11 @@ export default function Movimentacoes() {
       return false;
     }
 
-    if (!dataVencimento) {
+    // Data só é obrigatória para movimentações recorrentes
+    if (frequencia !== FrequenciaMovimentacao.AVULSA && !dataVencimento) {
       toast({
         title: 'Data obrigatória',
-        description: 'Selecione a data de vencimento.',
+        description: 'Para movimentações recorrentes, selecione a data de vencimento.',
         variant: 'destructive'
       });
       return false;
@@ -164,7 +165,10 @@ export default function Movimentacoes() {
     try {
       setSalvando(true);
       const valorNum = parseFloat(valor);
-      const data = new Date(dataVencimento + 'T00:00:00');
+      // Para movimentações avulsas sem data, usar data atual
+      const data = dataVencimento 
+        ? new Date(dataVencimento + 'T00:00:00')
+        : new Date();
 
       if (movimentacaoEditando) {
         // Editar movimentação existente
@@ -384,13 +388,24 @@ export default function Movimentacoes() {
               </div>
               
               <div>
-                <Label htmlFor="dataVencimento">Data de Vencimento</Label>
+                <Label htmlFor="dataVencimento">
+                  Data de Vencimento
+                  {frequencia !== FrequenciaMovimentacao.AVULSA && (
+                    <span className="text-red-500 ml-1">*</span>
+                  )}
+                </Label>
                 <Input
                   id="dataVencimento"
                   type="date"
                   value={dataVencimento}
                   onChange={(e) => setDataVencimento(e.target.value)}
+                  disabled={frequencia === FrequenciaMovimentacao.AVULSA}
                 />
+                {frequencia === FrequenciaMovimentacao.AVULSA && (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Para movimentações avulsas, a data atual será usada automaticamente.
+                  </p>
+                )}
               </div>
               
               <div className="col-span-2">

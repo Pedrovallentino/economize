@@ -43,6 +43,30 @@ export class RepositorioMovimentacao {
       throw new Error('Usuário não autenticado');
     }
 
+    // Buscar carteira atual para atualizar saldo
+    const { data: carteiraAtual, error: carteiraError } = await supabase
+      .from('carteiras')
+      .select('saldo')
+      .eq('id', dados.carteiraId)
+      .eq('usuario_id', user.user.id)
+      .single();
+
+    if (carteiraError) {
+      throw new Error(`Erro ao buscar carteira: ${carteiraError.message}`);
+    }
+
+    // Calcular novo saldo baseado no tipo de movimentação
+    const saldoAtual = parseFloat(carteiraAtual.saldo.toString());
+    const novoSaldo = dados.tipo === TipoMovimentacao.RECEITA 
+      ? saldoAtual + dados.valor 
+      : saldoAtual - dados.valor;
+
+    // Verificar se o saldo não ficará negativo para despesas
+    if (dados.tipo === TipoMovimentacao.DESPESA && novoSaldo < 0) {
+      throw new Error('Saldo insuficiente na carteira para realizar esta despesa');
+    }
+
+    // Inserir movimentação e atualizar saldo da carteira em uma transação
     const { data, error } = await supabase
       .from('movimentacoes')
       .insert([
@@ -62,6 +86,23 @@ export class RepositorioMovimentacao {
 
     if (error) {
       throw new Error(`Erro ao criar movimentação: ${error.message}`);
+    }
+
+    // Atualizar saldo da carteira
+    const { error: saldoError } = await supabase
+      .from('carteiras')
+      .update({ saldo: novoSaldo })
+      .eq('id', dados.carteiraId)
+      .eq('usuario_id', user.user.id);
+
+    if (saldoError) {
+      // Se falhar ao atualizar saldo, tentar desfazer a movimentação criada
+      await supabase
+        .from('movimentacoes')
+        .delete()
+        .eq('id', data.id);
+      
+      throw new Error(`Erro ao atualizar saldo da carteira: ${saldoError.message}`);
     }
 
     return this.mapearParaDominio(data);
@@ -201,6 +242,37 @@ export class RepositorioMovimentacao {
       throw new Error('Usuário não autenticado');
     }
 
+    // Buscar dados da movimentação antes de excluir para reverter o saldo
+    const { data: movimentacao, error: movError } = await supabase
+      .from('movimentacoes')
+      .select('*')
+      .eq('id', id)
+      .eq('usuario_id', user.user.id)
+      .single();
+
+    if (movError) {
+      throw new Error(`Erro ao buscar movimentação: ${movError.message}`);
+    }
+
+    // Buscar carteira atual
+    const { data: carteiraAtual, error: carteiraError } = await supabase
+      .from('carteiras')
+      .select('saldo')
+      .eq('id', movimentacao.carteira_id)
+      .eq('usuario_id', user.user.id)
+      .single();
+
+    if (carteiraError) {
+      throw new Error(`Erro ao buscar carteira: ${carteiraError.message}`);
+    }
+
+    // Calcular novo saldo revertendo a movimentação
+    const saldoAtual = parseFloat(carteiraAtual.saldo.toString());
+    const novoSaldo = movimentacao.tipo === TipoMovimentacao.RECEITA 
+      ? saldoAtual - parseFloat(movimentacao.valor.toString())
+      : saldoAtual + parseFloat(movimentacao.valor.toString());
+
+    // Excluir movimentação
     const { error } = await supabase
       .from('movimentacoes')
       .delete()
@@ -209,6 +281,17 @@ export class RepositorioMovimentacao {
 
     if (error) {
       throw new Error(`Erro ao excluir movimentação: ${error.message}`);
+    }
+
+    // Atualizar saldo da carteira
+    const { error: saldoError } = await supabase
+      .from('carteiras')
+      .update({ saldo: novoSaldo })
+      .eq('id', movimentacao.carteira_id)
+      .eq('usuario_id', user.user.id);
+
+    if (saldoError) {
+      throw new Error(`Erro ao atualizar saldo da carteira: ${saldoError.message}`);
     }
   }
 
