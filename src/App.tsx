@@ -8,6 +8,7 @@ import Layout from "@/components/Layout";
 import Dashboard from "@/pages/Dashboard";
 import Carteiras from "@/pages/Carteiras";
 import Movimentacoes from "@/pages/Movimentacoes";
+import Caixinhas from "@/pages/Caixinhas";
 import Auth from "@/pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -30,7 +31,7 @@ const App = () => (
             <Route path="carteiras" element={<Carteiras />} />
             <Route path="movimentacoes" element={<Movimentacoes />} />
             <Route path="metas" element={<div>Metas - Em desenvolvimento</div>} />
-            <Route path="caixinhas" element={<div>Caixinhas - Em desenvolvimento</div>} />
+            <Route path="caixinhas" element={<Caixinhas />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
