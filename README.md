@@ -1,73 +1,98 @@
-# Welcome to your Lovable project
+# Economize - Assistente Virtual Financeiro
 
-## Project info
+## Informações do Projeto
 
-**URL**: https://lovable.dev/projects/4a73bc08-e29e-43cb-9f84-54430f4382f1
+**URL do Projeto**: https://lovable.dev/projects/4a73bc08-e29e-43cb-9f84-54430f4382f1
 
-## How can I edit this code?
+O **Economize** é um assistente virtual financeiro que ajuda a organizar sua vida financeira de forma prática e intuitiva.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## Como Editar este Código
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4a73bc08-e29e-43cb-9f84-54430f4382f1) and start prompting.
+Existem várias maneiras de editar sua aplicação:
 
-Changes made via Lovable will be committed automatically to this repo.
+**Usando Lovable**
+Visite o [Projeto no Lovable](https://lovable.dev/projects/4a73bc08-e29e-43cb-9f84-54430f4382f1) e comece a fazer alterações via prompts. As mudanças serão commitadas automaticamente neste repositório.
 
-**Use your preferred IDE**
+**Usando sua IDE preferida**
+Clone este repositório e envie as alterações. Mudanças enviadas serão refletidas no Lovable.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Requisitos: Node.js & npm instalados - [instale com nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-Follow these steps:
+# Passo 1: Clone o repositório
+git clone <SEU_URL_GIT>
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Passo 2: Acesse o diretório do projeto
+cd "economize"
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+# Passo 3: Instale as dependências
 npm i
+# ou então 
+npm install date-fns@^3.6.0
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Passo 4: Inicie o servidor de desenvolvimento
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+# Tecnologias Utilizadas
+    Vite
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+    TypeScript
 
-**Use GitHub Codespaces**
+    React
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+    shadcn-ui
 
-## What technologies are used for this project?
+    Tailwind CSS
 
-This project is built with:
+    Supabase (autenticação e banco de dados)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+    npm/Bun (gerenciamento de pacotes)
 
-## How can I deploy this project?
+# Estrutura do Projeto
 
-Simply open [Lovable](https://lovable.dev/projects/4a73bc08-e29e-43cb-9f84-54430f4382f1) and click on Share -> Publish.
+    economize-main/
+    │
+    ├── public/        # Arquivos públicos
+    ├── src/           # Código fonte principal
+    │   ├── components/ # Componentes UI
+    │   ├── hooks/      # Hooks customizados
+    │   ├── lib/        # Utilitários
+    │   └── ...         # Demais pastas
+    ├── supabase/      # Configurações Supabase
+    ├── package.json   # Dependências
+    └── ...            # Outros arquivos de configuração
 
-## Can I connect a custom domain to my Lovable project?
+# Como Implantar este Projeto
+    Simplesmente acesse Lovable e clique em Share -> Publish.
 
-Yes, you can!
+# Domínio Personalizado
+    Você pode conectar um domínio personalizado:
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+    Navegue para Project > Settings > Domains
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+    Clique em Connect Domain
+
+# Desenvolvido por
+    José Gilson
+    José Nilton
+    Pedro Valentino 
+    Rodrigo Cardoso
+    Instituto Federal do Piauí - IFPI
+
+# Projeto base: Lovable
+
+Principais características mantidas:
+- Padrão de emojis para títulos
+- Seções bem divididas
+- Formatação de código
+- Estrutura visual semelhante
+- Informações técnicas organizadas em tabelas/listas
+
+Novos elementos incorporados:
+- Instruções detalhadas de edição
+- Informações sobre deploy
+- Configuração de domínio customizado
+- Links para documentação
+- Mantida a estrutura original do projeto
