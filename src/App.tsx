@@ -10,6 +10,7 @@ import Carteiras from "@/pages/Carteiras";
 import Movimentacoes from "@/pages/Movimentacoes";
 import Caixinhas from "@/pages/Caixinhas";
 import Metas from "@/pages/Metas";
+import Tutorial from "@/pages/Tutorial";
 import Auth from "@/pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="movimentacoes" element={<Movimentacoes />} />
             <Route path="metas" element={<Metas />} />
             <Route path="caixinhas" element={<Caixinhas />} />
+            <Route path="tutorial" element={<Tutorial />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

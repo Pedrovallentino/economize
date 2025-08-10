@@ -20,7 +20,8 @@ import {
   Target, 
   PiggyBank, 
   LogOut,
-  User
+  User,
+  BookOpen
 } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 
@@ -40,6 +41,7 @@ function AppSidebar() {
     { title: 'Movimentações', url: '/movimentacoes', icon: TrendingUp },
     { title: 'Metas Financeiras', url: '/metas', icon: Target },
     { title: 'Caixinhas de Poupança', url: '/caixinhas', icon: PiggyBank },
+    { title: 'Tutorial', url: '/tutorial', icon: BookOpen },
   ];
 
   const isActive = (path: string) => currentPath === path;
